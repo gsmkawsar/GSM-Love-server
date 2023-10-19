@@ -37,6 +37,13 @@ async function run() {
           res.send(result);
         })
 
+        app.get('/product', async(req, res)=>{
+            const cursor = postCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+
+
 
 
 
