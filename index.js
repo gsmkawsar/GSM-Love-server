@@ -28,7 +28,14 @@ async function run() {
         // await client.connect();
 
 
+        const postCollection = client.db('gsmManagerDB').collection('post');
 
+
+        app.post('/product', async(req, res)=>{
+          const newPost = req.body;
+          const result = await postCollection.insertOne(newPost);
+          res.send(result);
+        })
 
 
 
@@ -53,7 +60,7 @@ run().catch(console.dir);
 
 
 app.get('/', (req, res) => {
-    res.send('GSM Manegar Is Running');
+    res.send('GSM Manegar Is Running Done');
 });
 
 app.listen(port, () => {
