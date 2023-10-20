@@ -29,6 +29,7 @@ async function run() {
 
 
         const postCollection = client.db('gsmManagerDB').collection('post');
+        const AddCollection = client.db('gsmManagerDB').collection('addCard');
 
 
         // Product
@@ -48,18 +49,26 @@ async function run() {
         // My Cart
 
 
-        app.post('/myCard', async(req, res)=>{
+        app.post('/mycard', async(req, res)=>{
           const newPost = req.body;
-          const result = await postCollection.insertOne(newPost);
+          const result = await AddCollection.insertOne(newPost);
           res.send(result);
         })
 
-        app.get('/myCard', async(req, res)=>{
-            const cursor = postCollection.find();
+        app.get('/mycard', async(req, res)=>{
+            const cursor = AddCollection.find();
             const result = await cursor.toArray();
             res.send(result);
         })
 
+
+        app.delete('/mycard/:id', async (req, res)=>{
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await AddCollection.deleteOne(query);
+            res.send(result)
+
+        })
 
 
 
