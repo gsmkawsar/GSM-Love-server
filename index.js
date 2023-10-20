@@ -31,6 +31,8 @@ async function run() {
         const postCollection = client.db('gsmManagerDB').collection('post');
 
 
+        // Product
+
         app.post('/product', async(req, res)=>{
           const newPost = req.body;
           const result = await postCollection.insertOne(newPost);
@@ -43,7 +45,20 @@ async function run() {
             res.send(result);
         })
 
+        // My Cart
 
+
+        app.post('/myCard', async(req, res)=>{
+          const newPost = req.body;
+          const result = await postCollection.insertOne(newPost);
+          res.send(result);
+        })
+
+        app.get('/myCard', async(req, res)=>{
+            const cursor = postCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        })
 
 
 
