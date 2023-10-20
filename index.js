@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -34,35 +34,79 @@ async function run() {
 
         // Product
 
-        app.post('/product', async(req, res)=>{
-          const newPost = req.body;
-          const result = await postCollection.insertOne(newPost);
-          res.send(result);
+        app.post('/product', async (req, res) => {
+            const newPost = req.body;
+            const result = await postCollection.insertOne(newPost);
+            res.send(result);
         })
 
-        app.get('/product', async(req, res)=>{
+        app.get('/product', async (req, res) => {
             const cursor = postCollection.find();
             const result = await cursor.toArray();
             res.send(result);
         })
 
+
+        app.get('/product/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await postCollection.findOne(query)
+            res.send(result);
+        })
+
+
+        app.put('/product/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) };
+            const options = { upsert: true };
+            const updateProduct = req.body;
+            const product = {
+                $set: {
+
+                    name: updateProduct.name,
+                    brandName: updateProduct.brandName, 
+                    category:  updateProduct.category,
+                    price:  updateProduct.price ,
+                    shortDescription: updateProduct.shortDescription, 
+                    rating: updateProduct.rating ,
+                    image:  updateProduct.image
+                }
+            }
+            const result = await postCollection.updateOne(filter, product, options);
+            res.send(result);
+        })
+
+
+        
+        app.delete('/product/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await postCollection.deleteOne(query);
+            res.send(result)
+
+        })
+
+
+
+
+
         // My Cart
 
 
-        app.post('/mycard', async(req, res)=>{
-          const newPost = req.body;
-          const result = await AddCollection.insertOne(newPost);
-          res.send(result);
+        app.post('/mycard', async (req, res) => {
+            const newPost = req.body;
+            const result = await AddCollection.insertOne(newPost);
+            res.send(result);
         })
 
-        app.get('/mycard', async(req, res)=>{
+        app.get('/mycard', async (req, res) => {
             const cursor = AddCollection.find();
             const result = await cursor.toArray();
             res.send(result);
         })
 
 
-        app.delete('/mycard/:id', async (req, res)=>{
+        app.delete('/mycard/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) };
             const result = await AddCollection.deleteOne(query);
